@@ -22,8 +22,8 @@ document.getElementById('calculate-button').addEventListener('click', function()
     const balanceAfterCost = getId('balance-after-cost');
     balanceAfterCost.innerText = incomePerMonthNum - totalCost;
     }
-
     
+    incomePerMonth.value = ""
     
 })
 
@@ -42,6 +42,9 @@ if(isNaN(parseInt(clothesField.value))){
     erronFun("Cloth field not correct")
 }
 const totalCostPerMonth = parseInt(foodField.value) + parseInt(rentField.value) + parseInt(clothesField.value);
+rentField.value = ""
+clothesField.value = ""
+foodField.value = ""
 return totalCostPerMonth;
 }
 
@@ -65,6 +68,8 @@ getId('save-button').addEventListener('click', function(){
         getId('saving-ammount').innerText = totalSavePercent;
         getId('remaining-balance').innerText = remainBalancePresent;
     }
+    saveInput.value = ""
+
 })
 
     
