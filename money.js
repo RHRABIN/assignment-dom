@@ -1,81 +1,113 @@
-function getId (inputId){
-    const inputField = document.getElementById(inputId);
-    return inputField;
+function getId (idInput){
+    const id = document.getElementById(idInput);
+    return id;
 }
-
-document.getElementById('calculate-button').addEventListener('click', function(){
-    const incomePerMonth = getId('income-field'); //total income
-    const incomePerMonthNum = parseInt(incomePerMonth.value) 
+document.getElementById('calculate-button').addEventListener('click', function (){
+    const costTotal = costTotalFunc();
+    const totalIncomePerMonth = totalIncome();
+    // calculate
+    const expense = getId('total-expenses');
+    const balance = getId('balance-after-cost');
+    const presentBalance = totalIncomePerMonth - costTotal;
     
-    // calculate cost and balance
-    const totalCost = totalCostFuntion();
-    if( isNaN(totalCost)){
-        erronFun('String not allowed')
+    //eror 
+    if(isNaN(totalIncomePerMonth) || isNaN(costTotal)){
+        error1('!!Please give number')
+        expense.innerText = ""
+        balance.innerText = ""
+        getId('saving-ammount').innerText = ""
+        getId('remaining-balance').innerText = ""
     }
-    
-    else if(incomePerMonthNum<totalCost){
-        erronFun("not enough balance");
-    }
+    else if(totalIncomePerMonth < 0 || costTotal < 0){
+        error1('Negative Number Not Allowed')
+        expense.innerText = ""
+        balance.innerText = ""
+        getId('saving-ammount').innerText = ""
+        getId('remaining-balance').innerText = ""
+    } 
+    else if(costTotal> totalIncomePerMonth){
+        error1('Your Income is low!!')
+        expense.innerText = ""
+        balance.innerText = ""
+        getId('saving-ammount').innerText = ""
+        getId('remaining-balance').innerText = ""
+    } 
+    // final result 
     else {
-        const totalExpences = getId('total-expenses');
-    totalExpences.innerText  = totalCost;
-    const balanceAfterCost = getId('balance-after-cost');
-    balanceAfterCost.innerText = incomePerMonthNum - totalCost;
-    }
-    
-    incomePerMonth.value = ""
-    
+        expense.innerText = costTotal;
+        balance.innerText = presentBalance;
+        error1("")
+    }    
 })
 
-// total cost
-function totalCostFuntion(){
-const foodField = getId('food-field');
-if(isNaN(parseInt(foodField.value))){
-    erronFun("food field not correct")
+function costTotalFunc(){
+    const foodField =getId('food-field');
+    const foodFildNum = parseInt(foodField.value)
+    const rentField =getId('rent-field');
+    const rentFieldNum = parseInt(rentField.value)
+    const clothField =getId('clothes-field');
+    const clothFieldNum = parseInt(clothField.value)
+
+    const totalCost = foodFildNum + rentFieldNum + clothFieldNum;
+    foodField.value = ""
+    rentField.value = ""
+    clothField.value = ""
+    return totalCost;
 }
-const rentField = getId('rent-field');
-if(isNaN(parseInt(rentField.value))){
-    erronFun("rent field not correct")
+function totalIncome(){
+    const income  = getId('income-field');
+    const incomeNum = parseInt(income.value);
+    income.value = ""
+    return incomeNum ;
 }
-const clothesField = getId('clothes-field');
-if(isNaN(parseInt(clothesField.value))){
-    erronFun("Cloth field not correct")
+// 
+function totalExpense(){
+    const expense = getId('total-expenses');
+    const expenseNum = parseInt(expense.innerText);
+
+    return expenseNum ;
 }
-const totalCostPerMonth = parseInt(foodField.value) + parseInt(rentField.value) + parseInt(clothesField.value);
-rentField.value = ""
-clothesField.value = ""
-foodField.value = ""
-return totalCostPerMonth;
+function totalBalanceAfterCost(){
+    const balance = getId('balance-after-cost');
+    const balanceNum = parseInt(balance.innerText);
+
+    return balanceNum ;
 }
 
-// saving ammount
 getId('save-button').addEventListener('click', function(){
-    const saveInput = getId('save-input');
-    const saveInputNum = parseInt(saveInput.value);
-   
-    const totalCost = totalCostFuntion();
-    const mainBalance =  getId('income-field');
-    const mainBalanceNum = parseInt(mainBalance.value);
-    const remainBalance = mainBalanceNum - totalCost;
+    const inputPercent = getId('save-input');
+    const inputPercentNum = parseInt(inputPercent.value);
+    inputPercent.value = ""
 
-    const totalSavePercent =  (saveInputNum * mainBalanceNum ) / 100;
 
-    const remainBalancePresent = remainBalance - totalSavePercent;
-    if(totalSavePercent>remainBalance){
-        erronFun2('not enough balance')
+    if(isNaN(inputPercentNum)){
+        error2('Please give string to input!!')
     }
-    else{
-        getId('saving-ammount').innerText = totalSavePercent;
-        getId('remaining-balance').innerText = remainBalancePresent;
+    else if(inputPercentNum < 0){
+        error2("Negative Number not allowed")
     }
-    saveInput.value = ""
-
-})
-
     
-function erronFun(war){
-    document.getElementById('error').innerText = war;
+    else{
+        
+    //function call
+    const expense = totalExpense();
+    const balance = totalBalanceAfterCost();
+
+    const total = expense + balance;
+    const inputPercentCurrent = (total * inputPercentNum) / 100;
+    const inputPercentCurrentFixed = inputPercentCurrent.toFixed(2)
+    const remainingBalance = balance - inputPercentCurrent;
+    const remainingBalanceFixed = remainingBalance.toFixed(2);
+    getId('saving-ammount').innerText = inputPercentCurrentFixed;
+    getId('remaining-balance').innerText = remainingBalanceFixed;
+    error2("")
+    }
+    
+})
+// error function
+function error1(err){
+    getId('error').innerText = err;
 }
-function erronFun2(war){
-    document.getElementById('error2').innerText = war;
+function error2(err){
+    getId('error2').innerText = err;
 }
